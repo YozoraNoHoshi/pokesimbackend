@@ -12,8 +12,11 @@ if (process.env.NODE_ENV === 'test') {
   DB_URI = process.env.DATABASE_URL || 'pokesim';
 }
 
+const POKEURL = 'https://pokeapi.co/api/v2';
+
 module.exports = {
   SECRET,
+  POKEURL,
   PORT,
   DB_URI
 };
