@@ -17,8 +17,11 @@ class Habitat {
     return result.rows[0];
   }
   static async getPokemonofHabitats(name) {
-    let result = await db.query(`SELECT * FROM `); // join
+    let result = await db.query(`SELECT * FROM `, [name]); // join
     return result.rows;
+  }
+  static async randomPokemonFromHabitat(name) {
+    return;
   }
 }
 
