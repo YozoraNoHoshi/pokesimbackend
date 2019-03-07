@@ -18,7 +18,7 @@ class Pokemon {
     return result.rows[0];
   }
   static async getHabitatsOfPokemon(name) {
-    let result = await db.query(`SELECT * FROM`); // Join table stuff
+    let result = await db.query(`SELECT * FROM`, [name]); // Join table stuff
     return result.rows;
   }
 }
