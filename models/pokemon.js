@@ -7,6 +7,10 @@ class Pokemon {
     let result = await db.query(`SELECT * FROM pokemon`);
     return result.rows;
   }
+  static async getUniquePokemonNames() {
+    let result = await db.query(`SELECT name FROM pokemon`);
+    return new Set(result.rows.map(p => p.name));
+  }
   static async getSpecificPokemon(name) {
     let result = await db.query(`SELECT * FROM pokemon WHERE name = $1`, [
       name

@@ -3,30 +3,65 @@ const env = require('../config');
 const axios = require('axios');
 const Habitat = require('./habitat');
 const Pokemon = require('./pokemon');
-const { getDescription } = require('../helpers/helpers');
+const { getDescription, buildMultipleInsert } = require('../helpers/helpers');
+
+function uniquePokemon(habitats, seenPoke) {
+  let pokemon = [];
+  let tempPokemon = new Set(habitats.map(h => h.pokemon).flat());
+  tempPokemon.forEach(p => pokemon.push(p));
+  return pokemon.filter(p => !seenPoke.has(p));
+}
+
+function generateHabitatPairs(habitats) {
+  let inhabitants = [];
+  for (let habitat of habitats) {
+    for (let poke of habitats.pokemon) {
+      inhabitants.push({ habitat: habitat.name, pokemon: poke });
+    }
+  }
+  return inhabitants;
+}
 
 // pokemon table (id, name, species, title, flavor_text, catch_rate, sprite)
 // habitat table (name, description)
 // habitat_inhabitants (habitat, pokemon)
 class PokeAPI {
-  // Linking habitat to pokemon that live in habitat
-  // Assume: Habitat exists. Pokemon may or may not exist.
-  // Get a list of all pokemon in db
-  // If pokemon in parameter is in the db list, add a join table entry to the selected habitat
-  // Function does not need to return anything. I think.
-  //
-  // Get all pokemon that live inside a habitat
-  // Join pokemon such that we get their data
-  //
-  // Get all habitats occupied by pokemon
-  // Join habitats such that we get the data
-
   static async getAllHabitatsAndPokemon() {
-    let response = await axios.get(`${env.POKEURL}/pal-park-area`);
-    // habitats will look like [{name: forest, description: "No data found.", pokemon: [caterpie, butterfree, etc]}]
+    let response = await Promise.all([
+      axios.get(`${env.POKEURL}/pal-park-area`),
+      Pokemon.getUniquePokemonNames()
+    ]);
     let habitats = await Promise.all(
-      response.rows.map(area => PokeAPI.getSpecificHabitat(area.name))
+      response[0].data.results.map(area =>
+        PokeAPI.getSpecificHabitat(area.name)
+      )
     );
+    let pokemon = uniquePokemon(habitats, response[1]);
+    if (pokemon.length === 0) return;
+    let pokemons = await Promise.all(pokemon.map(p => PokeAPI.getPokemon(p)));
+
+    await Promise.all([
+      PokeAPI.multipleInsert('habitats', ['name', 'description'], habitats),
+      PokeAPI.multipleInsert(
+        'pokemon',
+        [
+          'id',
+          'name',
+          'species',
+          'title',
+          'flavor_text',
+          'catch_rate',
+          'sprite'
+        ],
+        pokemons
+      )
+    ]);
+    await PokeAPI.multipleInsert(
+      'habitat_inhabitants',
+      ['habitat', 'pokemon'],
+      generateHabitatPairs(habitats)
+    );
+    // Populate PokemonHabitats
   }
 
   static async getSpecificHabitat(areaName) {
@@ -50,23 +85,19 @@ class PokeAPI {
       capture_rate,
       flavor_text_entries,
       genera,
-      names,
-      pal_park_encounters
+      names
     } = response.data;
     let sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
     let title = genera.find(p => {
       return p.language.name === 'en';
     }).genus;
     let flavor_text = flavor_text_entries.find(p => {
-      return p.version.name === 'emerald' && p.language.name === 'en';
+      return p.language.name === 'en';
     }).flavor_text;
     let species = names.find(p => {
       return p.language.name === 'en';
     }).name;
-    let habitats = pal_park_encounters.map(p => {
-      return p.area.name;
-    });
-    let pokemonData = {
+    return {
       id,
       name,
       title,
@@ -75,32 +106,12 @@ class PokeAPI {
       flavor_text,
       species
     };
-    return await PokeAPI.insertPokemon(pokemonData);
   }
 
-  static async insertHabitat(habitat) {
-    // Inserts into habitats table
-    let result = await db.query(
-      `INSERT INTO habitats (name, description) VALUES ($1, $2) RETURNING *`,
-      [habitat.name, habitat.description]
-    );
-    return result.rows[0];
-  }
-
-  static async insertPokemon({
-    id,
-    name,
-    title,
-    sprite,
-    catch_rate,
-    flavor_text,
-    species
-  }) {
-    let result = db.query(
-      `INSERT INTO pokemon (id, name, species, title, flavor_text, catch_rate, sprite) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [id, name, species, title, flavor_text, catch_rate, sprite]
-    );
-    return result.rows[0];
+  static async multipleInsert(table, columns, items) {
+    let { query, values } = buildMultipleInsert(table, columns, items);
+    let result = await db.query(query, values);
+    return result.rows;
   }
 }
 
