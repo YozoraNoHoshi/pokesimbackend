@@ -61,7 +61,7 @@ class PokeAPI {
       ['habitat', 'pokemon'],
       generateHabitatPairs(habitats)
     );
-    // Populate PokemonHabitats
+    return true;
   }
 
   static async getSpecificHabitat(areaName) {
