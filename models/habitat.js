@@ -16,12 +16,21 @@ class Habitat {
     ]);
     return result.rows[0];
   }
-  static async getPokemonofHabitats(name) {
-    let result = await db.query(`SELECT * FROM `, [name]); // join
+
+  // Need joins written
+  static async getPokemonOfHabitats(name) {
+    let result = await db.query(`SELECT * FROM `, [name]); // join, also include pokemon data in result
     return result.rows;
   }
   static async randomPokemonFromHabitat(name) {
-    return;
+    // JOIN ON THE JOIN TABLE AND THE POKEMON TABLE
+    let habitatPokemon = await db.query(
+      `SELECT * FROM pokemon ORDER BY random() LIMIT 1`,
+      [name]
+    );
+    // Select a random item from the returned results. TO DO IN THE FUTURE - IMPLEMENT A WEIGHTING FOR APPEARANCE RATES
+    let index = Math.floor(Math.random() * habitatPokemon.length);
+    return habitatPokemon[index];
   }
 }
 
