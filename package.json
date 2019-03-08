@@ -1,0 +1,26 @@
+{
+  "name": "pokemonsimbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YozoraNoHoshi/pokesimbackend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YozoraNoHoshi/pokesimbackend/issues"
+  },
+  "homepage": "https://github.com/YozoraNoHoshi/pokesimbackend#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "pg": "^7.8.2"
+  }
+}
