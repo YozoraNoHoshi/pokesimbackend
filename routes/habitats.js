@@ -1,10 +1,8 @@
 const express = require('express');
 const router = new express.Router();
 const Habitat = require('../models/habitat');
-const PokeAPI = require('../models/pokemonHabitat');
 
 // get all habitat data (excluding pokemon that live there)
-
 router.get('/', async function(req, res, next) {
   try {
     let habitats = await Habitat.getAllHabitats();
@@ -14,15 +12,16 @@ router.get('/', async function(req, res, next) {
   }
 });
 
-router.get('/everything', async function(req, res, next) {
+// Get pokemon that live in the habitat
+router.get('/:habitat/pokemon', async function(req, res, next) {
   try {
-    await PokeAPI.getAllHabitatsAndPokemon();
-    return res.json({ true: true });
+    let pokemon = await Habitat.getPokemonOfHabitats(req.params.habitat);
+    return res.json({ pokemon });
   } catch (error) {
     return next(error);
   }
 });
-
+// Get a random pokemon for battling
 router.get('/:habitat/battle', async function(req, res, next) {
   try {
     let pokemon = await Habitat.randomPokemonFromHabitat(req.params.habitat);

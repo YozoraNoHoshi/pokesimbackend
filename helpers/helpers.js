@@ -1,7 +1,12 @@
-// INSERT INTO ${table} (<table columns>) VALUES ($1, $2, $3, etc), ($4, $5, $6)
-// Generate this somehow using a helper function maybe
-
-const habitatDescriptions = {};
+const habitatDescriptions = {
+  field: 'A grassy field dotted here and there with trees.',
+  forest: 'Light barely reaches the bottom of this dense forest.',
+  mountain:
+    'A mountain range rises above, with a single beaten path ascending to the peak.',
+  pond:
+    'A series of ponds scattered here and there are all that marks the area.',
+  sea: 'The sounds of the sea are waves occasionally lapping the beach.'
+};
 
 function getDescription(habitatName) {
   if (habitatDescriptions[habitatName]) return habitatDescriptions[habitatName];
