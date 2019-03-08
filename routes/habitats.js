@@ -34,8 +34,8 @@ router.get('/:habitat/battle', async function(req, res, next) {
 // get specific habitat data (including pokemon that live there)
 router.get('/:habitat', async function(req, res, next) {
   try {
-    let habitats = await Habitat.getSpecificHabitat(req.params.habitat);
-    return res.json({ habitats });
+    let habitat = await Habitat.getSpecificHabitat(req.params.habitat);
+    return res.json({ habitat });
   } catch (error) {
     return next(error);
   }

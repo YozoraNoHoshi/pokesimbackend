@@ -19,18 +19,24 @@ class Habitat {
 
   // Need joins written
   static async getPokemonOfHabitats(name) {
-    let result = await db.query(`SELECT * FROM `, [name]); // join, also include pokemon data in result
+    let result = await db.query(
+      `SELECT ph.habitat, p.name, p.id, p.species, p.title, p.flavor_text, p.catch_rate, p.sprite 
+      FROM pokehabitats ph
+      JOIN pokemon p ON ph.pokemon = p.name
+      WHERE ph.habitat = $1;`,
+      [name]
+    );
     return result.rows;
   }
   static async randomPokemonFromHabitat(name) {
-    // JOIN ON THE JOIN TABLE AND THE POKEMON TABLE
     let habitatPokemon = await db.query(
-      `SELECT * FROM pokemon ORDER BY random() LIMIT 1`,
+      `SELECT p.name, p.id, p.species, p.title, p.flavor_text, p.catch_rate, p.sprite 
+      FROM pokehabitats ph
+      JOIN pokemon p ON ph.pokemon = p.name
+      WHERE ph.habitat = $1 ORDER BY random() LIMIT 1;`,
       [name]
     );
-    // Select a random item from the returned results. TO DO IN THE FUTURE - IMPLEMENT A WEIGHTING FOR APPEARANCE RATES
-    let index = Math.floor(Math.random() * habitatPokemon.length);
-    return habitatPokemon[index];
+    return habitatPokemon.rows[0];
   }
 }
 
