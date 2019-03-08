@@ -9,6 +9,7 @@ const Pokemon = require('../models/pokemon');
 
 // Get all pokemon from local db
 router.get('/', async function(req, res, next) {
+  // Debug getting single pokemon only
   try {
     let pokemon = await Pokemon.getPokemon();
     return res.json({ pokemon });
@@ -37,3 +38,5 @@ router.get('/:pokemon/habitats', async function(req, res, next) {
     return next(error);
   }
 });
+
+module.exports = router;
