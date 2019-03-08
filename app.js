@@ -5,10 +5,10 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 
-// const votesRoutes = require('./routes/votes');
+const pokemonRoutes = require('./routes/pokemon');
 const habitatsRoutes = require('./routes/habitats');
 
-// app.use('/votes', votesRoutes);
+app.use('/pokemon', pokemonRoutes);
 app.use('/habitats', habitatsRoutes);
 
 app.use(function(req, res, next) {
