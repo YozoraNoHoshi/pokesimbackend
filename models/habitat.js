@@ -17,10 +17,9 @@ class Habitat {
     return result.rows[0];
   }
 
-  // Need joins written
   static async getPokemonOfHabitats(name) {
     let result = await db.query(
-      `SELECT ph.habitat, p.name, p.id, p.species, p.title, p.flavor_text, p.catch_rate, p.sprite 
+      `SELECT p.name, p.species, p.sprite 
       FROM pokehabitats ph
       JOIN pokemon p ON ph.pokemon = p.name
       WHERE ph.habitat = $1;`,
