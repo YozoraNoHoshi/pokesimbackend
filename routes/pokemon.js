@@ -32,7 +32,8 @@ router.get('/:pokemon', async function(req, res, next) {
 // get habitats that this pokemon can be found in. Also get all the pokemon data.
 router.get('/:pokemon/habitats', async function(req, res, next) {
   try {
-    let pokemon = await Pokemon.getHabitatsOfPokemon(req.params.pokemon);
+    let query = req.query.column || 'name';
+    let pokemon = await Pokemon.getHabitatsOfPokemon(req.params.pokemon, query);
     return res.json({ pokemon });
   } catch (error) {
     return next(error);
