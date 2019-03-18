@@ -1,4 +1,5 @@
 const db = require('../db');
+const { stringifyID, title } = require('../helpers/helpers');
 
 // pokemon table (id, name, species, title, flavor_text, catch_rate, sprite)
 // habitat_inhabitants (habitat, pokemon)
@@ -12,7 +13,10 @@ class Pokemon {
       values = [nameOrID.toLowerCase()];
     }
     let result = await db.query(query, values);
-    if (result.rows.length === 1) return result.rows[0];
+    if (result.rows.length === 1) {
+      result.rows[0].id = stringifyID(result.rows[0].id);
+      return result.rows[0];
+    }
     return result.rows;
   }
   static async getUniquePokemonNames() {
@@ -30,7 +34,13 @@ class Pokemon {
       `,
       [pokemonName]
     );
-    if (result.rows.length === 1) return result.rows[0];
+    if (result.rows.length === 1) {
+      result.rows[0].id = stringifyID(result.rows[0].id);
+      result.rows[0].habitats = result.rows[0].habitats
+        .map(h => title(h))
+        .join(', ');
+      return result.rows[0];
+    }
     return result.rows;
   }
 }

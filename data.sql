@@ -20,7 +20,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: habitats; Type: TABLE; Schema: public; Owner: nsena
+-- Name: habitats; Type: TABLE; Schema: public;
 --
 
 CREATE TABLE public.habitats (
@@ -28,11 +28,8 @@ CREATE TABLE public.habitats (
     description text
 );
 
-
-ALTER TABLE public.habitats OWNER TO nsena;
-
 --
--- Name: pokehabitats; Type: TABLE; Schema: public; Owner: nsena
+-- Name: pokehabitats; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE public.pokehabitats (
@@ -41,10 +38,8 @@ CREATE TABLE public.pokehabitats (
 );
 
 
-ALTER TABLE public.pokehabitats OWNER TO nsena;
-
 --
--- Name: pokemon; Type: TABLE; Schema: public; Owner: nsena
+-- Name: pokemon; Type: TABLE; Schema: public; 
 --
 
 CREATE TABLE public.pokemon (
@@ -58,10 +53,8 @@ CREATE TABLE public.pokemon (
 );
 
 
-ALTER TABLE public.pokemon OWNER TO nsena;
-
 --
--- Data for Name: habitats; Type: TABLE DATA; Schema: public; Owner: nsena
+-- Data for Name: habitats; Type: TABLE DATA; Schema: public; 
 --
 
 COPY public.habitats (name, description) FROM stdin;
@@ -74,7 +67,7 @@ forest	Light barely reaches the bottom of this dense forest.
 
 
 --
--- Data for Name: pokehabitats; Type: TABLE DATA; Schema: public; Owner: nsena
+-- Data for Name: pokehabitats; Type: TABLE DATA; Schema: public;
 --
 
 COPY public.pokehabitats (habitat, pokemon) FROM stdin;
@@ -575,7 +568,7 @@ sea	manaphy
 
 
 --
--- Data for Name: pokemon; Type: TABLE DATA; Schema: public; Owner: nsena
+-- Data for Name: pokemon; Type: TABLE DATA; Schema: public; 
 --
 
 COPY public.pokemon (id, name, species, title, flavor_text, catch_rate, sprite) FROM stdin;
@@ -1076,7 +1069,7 @@ COPY public.pokemon (id, name, species, title, flavor_text, catch_rate, sprite) 
 
 
 --
--- Name: habitats habitats_pkey; Type: CONSTRAINT; Schema: public; Owner: nsena
+-- Name: habitats habitats_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY public.habitats
@@ -1084,7 +1077,7 @@ ALTER TABLE ONLY public.habitats
 
 
 --
--- Name: pokehabitats pokeHabitats_pkey; Type: CONSTRAINT; Schema: public; Owner: nsena
+-- Name: pokehabitats pokeHabitats_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY public.pokehabitats
@@ -1092,7 +1085,7 @@ ALTER TABLE ONLY public.pokehabitats
 
 
 --
--- Name: pokemon pokemon_name_key; Type: CONSTRAINT; Schema: public; Owner: nsena
+-- Name: pokemon pokemon_name_key; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY public.pokemon
@@ -1100,7 +1093,7 @@ ALTER TABLE ONLY public.pokemon
 
 
 --
--- Name: pokemon pokemon_pkey; Type: CONSTRAINT; Schema: public; Owner: nsena
+-- Name: pokemon pokemon_pkey; Type: CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY public.pokemon
@@ -1108,7 +1101,7 @@ ALTER TABLE ONLY public.pokemon
 
 
 --
--- Name: pokehabitats pokeHabitats_habitat_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nsena
+-- Name: pokehabitats pokeHabitats_habitat_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY public.pokehabitats
@@ -1116,7 +1109,7 @@ ALTER TABLE ONLY public.pokehabitats
 
 
 --
--- Name: pokehabitats pokeHabitats_pokemon_fkey; Type: FK CONSTRAINT; Schema: public; Owner: nsena
+-- Name: pokehabitats pokeHabitats_pokemon_fkey; Type: FK CONSTRAINT; Schema: public; 
 --
 
 ALTER TABLE ONLY public.pokehabitats

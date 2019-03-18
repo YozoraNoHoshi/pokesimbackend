@@ -39,4 +39,17 @@ function buildMultipleInsert(table, columns, items) {
   return { query, values };
 }
 
-module.exports = { getDescription, buildMultipleInsert };
+function stringifyID(id) {
+  let result = `${id}`;
+  while (result.length < 3) {
+    result = `0${result}`;
+  }
+  return result;
+}
+
+function title(word) {
+  if (word.length === 1) return word.toUpperCase();
+  return word[0].toUpperCase() + word.slice(1);
+}
+
+module.exports = { getDescription, buildMultipleInsert, stringifyID, title };
