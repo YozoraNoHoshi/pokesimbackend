@@ -153,7 +153,7 @@ class PokeAPI {
       let { flavor_text_entries, cost, name, names, sprites } = p.data;
       let flavor_text = flavor_text_entries.find(p => {
         return p.language.name === 'en';
-      }).flavor_text;
+      }).text;
       let species = names.find(p => {
         return p.language.name === 'en';
       }).name;

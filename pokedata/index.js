@@ -1,3 +1,3 @@
 const PokeAPI = require('./pokeapi');
 
-PokeAPI.doIt();
+PokeAPI.getPokeballs();
