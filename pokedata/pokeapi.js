@@ -3,42 +3,12 @@ const env = require('../config');
 const axios = require('axios');
 const Pokemon = require('../models/pokemon');
 const fs = require('fs');
-const { getDescription, buildMultipleInsert } = require('../helpers/helpers');
-
-function uniquePokemon(habitats, seenPoke) {
-  let pokemon = [];
-  let temp = habitats.map(h => h.pokemon);
-  let tempPokemon = new Set(flat(temp));
-  // let tempPokemon = new Set(habitats.map(h => h.pokemon).flat());
-  tempPokemon.forEach(p => pokemon.push(p));
-  return pokemon.filter(p => !seenPoke.has(p));
-}
-
-function flat(array) {
-  let flattened = [];
-  function _flat(subArr) {
-    for (let item of subArr) {
-      if (Array.isArray(item)) _flat(item);
-      else flattened.push(item);
-    }
-  }
-  _flat(array);
-  return flattened;
-}
-
-function generateHabitatPairs(habitats) {
-  let inhabitants = [];
-  for (let habitat of habitats) {
-    for (let poke of habitat.pokemon) {
-      inhabitants.push({ habitat: habitat.name, pokemon: poke });
-    }
-  }
-  return inhabitants;
-}
-
-// pokemon table (id, name, species, title, flavor_text, catch_rate, sprite)
-// habitat table (name, description)
-// habitat_inhabitants (habitat, pokemon)
+const {
+  getDescription,
+  buildMultipleInsert,
+  uniquePokemon,
+  generateHabitatPairs
+} = require('../helpers/helpers');
 
 class PokeAPI {
   static async doIt() {
@@ -172,6 +142,32 @@ class PokeAPI {
     };
   }
 
+  static async getPokeballs() {
+    let response = await axios.get(
+      `${env.POKEURL}/item-category/standard-balls`
+    );
+    let pokeballs = await Promise.all(
+      response.data.items.map(p => axios.get(p.url))
+    );
+    let pokeballData = pokeballs.map(p => {
+      let { flavor_text_entries, cost, name, names, sprites } = p.data;
+      let flavor_text = flavor_text_entries.find(p => {
+        return p.language.name === 'en';
+      }).flavor_text;
+      let species = names.find(p => {
+        return p.language.name === 'en';
+      }).name;
+      let sprite = sprites.default;
+      return { name, species, multiplier: 1, cost, flavor_text, sprite };
+    });
+    await PokeAPI.multipleInsert(
+      'pokeballs',
+      ['name', 'species', 'multiplier', 'cost', 'flavor_text', 'sprite'],
+      pokeballData
+    );
+    console.log('Inserted', pokeballData);
+  }
+
   static async multipleInsert(table, columns, items) {
     let { query, values } = buildMultipleInsert(table, columns, items);
     let result = await db.query(query, values);
@@ -179,4 +175,4 @@ class PokeAPI {
   }
 }
 
-PokeAPI.doIt();
+module.exports = PokeAPI;
