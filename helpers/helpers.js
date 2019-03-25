@@ -52,4 +52,41 @@ function title(word) {
   return word[0].toUpperCase() + word.slice(1);
 }
 
-module.exports = { getDescription, buildMultipleInsert, stringifyID, title };
+function uniquePokemon(habitats, seenPoke) {
+  let pokemon = [];
+  let temp = habitats.map(h => h.pokemon);
+  let tempPokemon = new Set(flat(temp));
+  tempPokemon.forEach(p => pokemon.push(p));
+  return pokemon.filter(p => !seenPoke.has(p));
+}
+
+function flat(array) {
+  let flattened = [];
+  function _flat(subArr) {
+    for (let item of subArr) {
+      if (Array.isArray(item)) _flat(item);
+      else flattened.push(item);
+    }
+  }
+  _flat(array);
+  return flattened;
+}
+
+function generateHabitatPairs(habitats) {
+  let inhabitants = [];
+  for (let habitat of habitats) {
+    for (let poke of habitat.pokemon) {
+      inhabitants.push({ habitat: habitat.name, pokemon: poke });
+    }
+  }
+  return inhabitants;
+}
+
+module.exports = {
+  generateHabitatPairs,
+  uniquePokemon,
+  getDescription,
+  buildMultipleInsert,
+  stringifyID,
+  title
+};
