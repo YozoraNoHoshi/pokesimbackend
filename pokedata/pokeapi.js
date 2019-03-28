@@ -15,19 +15,22 @@ class PokeAPI {
     await PokeAPI.getAllHabitats();
     let end = await PokeAPI.splitPokemonFiles();
     let counter = 0;
-    let timeout = setTimeout(async () => {
+    let timeout = setInterval(async () => {
       if (counter <= end) {
         let file = `pokemon-${counter}.json`;
         await PokeAPI.getAllPokemons(file);
         counter++;
         fs.rmdir(file);
-      } else clearTimeout(timeout);
-    }, 60000);
+      } else {
+        clearInterval(timeout);
+        console.log('Completed pokemon insert');
+      }
+    }, 61000);
     await PokeAPI.insertIntoDB();
     fs.rmdir('pokemon.json');
     fs.rmdir('habitats.json');
 
-    console.log('Completed.');
+    console.log('Completed habitat insert');
   }
 
   static async getAllHabitats() {
@@ -69,7 +72,7 @@ class PokeAPI {
       let item = pokemon.slice(start, Math.min(start + 50, pokemon.length));
       fs.writeFile(`pokemon-${index}.json`, JSON.stringify(item), err => {
         if (err) process.exit(1);
-        console.log('written files');
+        console.log(`wrote to file pokemon-${index}.json`);
       });
     }
     return noFiles;
